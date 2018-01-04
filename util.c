@@ -1,9 +1,9 @@
-#include"info.h"
+﻿#include"info.h"
 #define HASH_MASK 1023
 
 
 int
-buf_hash(char *name, int len)
+buf_hash(char *name, int len)	//-哈希
 {
 	int retval = 0;
 

@@ -2155,7 +2155,7 @@ DeleteVideoVol(const char *vol_path)
 	return 0;
 }
 
-int creatCameraList()//creat camera list
+int creatCameraList()//creat camera list	,,创建第一个链表节点
 {
     CameraInfos = NULL;
     if( NULL == (CameraInfos = malloc(sizeof(CameraInfo))))
@@ -2349,7 +2349,7 @@ int initCameraInfos()
      char buf[Vnode_SIZE];
      vnode v;
      const char *lv_name;
-     removeCameraList();
+     removeCameraList();	//-清除链表
      if(creatCameraList()<0)
         return -1;
      get_lv_name (lv, MAX_LV_NUM);  

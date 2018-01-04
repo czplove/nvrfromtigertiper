@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -14,23 +14,23 @@ findStreamInfo(unsigned int handle)
 	int i = 0;
 	
 	    //LOCKINFO("read lock...");
-	    pthread_rwlock_rdlock(&SInfo_PRW);
+	    pthread_rwlock_rdlock(&SInfo_PRW);	//-读取读写锁中的锁
 	
 	    //LOCKINFO("get read lock...");
 	    i = HASH(handle);
 	for (; i < MAX_STREAMS + HASH(handle); i++)
-		 {
+	{
 		if (!streamInfos[HASH(i)])
 			continue;
 		if (streamInfos[HASH(i)]->handle == handle)
-			 {
+		{
 			pthread_rwlock_unlock(&SInfo_PRW);
 			
 			    //LOCKINFO("read unlock...");
 			    return HASH(i);
-			}
 		}
-	pthread_rwlock_unlock(&SInfo_PRW);
+	}
+	pthread_rwlock_unlock(&SInfo_PRW);	//-解除锁定读写锁
 	
 	    //LOCKINFO("read unlock...");
 	    return -1;
@@ -94,7 +94,7 @@ allocStreamInfo(unsigned int handle)
 	streamInfos[i]->BUsed_Size[0] = 0;
 	streamInfos[i]->BUsed_Size[1] = 0;
     streamInfos[i]->wrThread = 0;
-	pthread_rwlock_init(&streamInfos[i]->RWlock_Recording, NULL);
+	pthread_rwlock_init(&streamInfos[i]->RWlock_Recording, NULL);	//-初始化读写锁
 	pthread_mutex_init(&streamInfos[i]->Mutex_Buffer[0], NULL);
 	pthread_mutex_init(&streamInfos[i]->Mutex_Buffer[1], NULL);
 	return i;
@@ -108,7 +108,7 @@ releaseStreamInfo(StreamInfo ** si)
 	pthread_rwlock_wrlock(&SInfo_PRW);
 	pthread_mutex_destroy(&(*si)->Mutex_Buffer[1]);
 	pthread_mutex_destroy(&(*si)->Mutex_Buffer[0]);
-	pthread_rwlock_destroy(&(*si)->RWlock_Recording);
+	pthread_rwlock_destroy(&(*si)->RWlock_Recording);	//-销毁读写锁
 	bzero((*si), sizeof(StreamInfo)); 
 	free(*si);
 	*si = NULL;

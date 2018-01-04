@@ -20,7 +20,7 @@ int lockfile(int fd)
     return (fcntl(fd, F_SETLK, &fk));
 }
 
-int already_running(void)
+int already_running(void)	//-通过一个文件判断是否正在运行,保证程序唯一运行
 {
     int fd;
     char buf[16];
@@ -47,7 +47,7 @@ int already_running(void)
     return 0;
 }
 
-int tcp_create()
+int tcp_create()	//-作为服务器实现了对8000端口的监听
 {
     int listenfd;
     struct sockaddr_in servaddr;
