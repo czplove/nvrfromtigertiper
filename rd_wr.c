@@ -53,7 +53,8 @@ get_vnode(_sbinfo sbinfo, vnode * v, int ID)
 }
 
 
-
+int
+get_bitmap(int fd, _sbinfo sbinfo);
 inline int
 get_bitmap(int fd, _sbinfo sbinfo)
 {				//读取逻辑卷的bitmap。
@@ -132,6 +133,8 @@ vnodes_build(_sbinfo sbinfo)
 	return -1;
 }
 
+int
+get_vbitmap(int fd, _sbinfo sbinfo);
 inline int
 get_vbitmap(int fd, _sbinfo sbinfo)
 {				//从逻辑卷中读取vbitmap
@@ -1787,6 +1790,9 @@ GetRecordSegSize(const char *cameraid, uint32_t StartTime, uint32_t EndTime)
 	return -1;
 
 }
+
+int
+is_allow_alloc(_sbinfo sbinfo, short blocks);
 inline int
 is_allow_alloc(_sbinfo sbinfo, short blocks)
 {				//欲分配blocks的块，是否有足够的空闲块。
