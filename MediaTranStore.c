@@ -1,4 +1,4 @@
-#include "MediaTranStore.h"
+ï»¿#include "MediaTranStore.h"
 #include "MediaSDK.h"
 #include <sys/types.h>
 #include <errno.h>
@@ -48,7 +48,7 @@ int NAR_record(unsigned int recordHandle,const char *data ,int dataLen,
     writeargs.data.data_len = dataLen;
     return nvrproc_write(writeargs); 
 }
-char *readline(char *mbuf, int maxlen, FILE *fp)
+char *readline(char *mbuf, int maxlen, FILE *fp)	//-å…ˆè¯»å‡ºä¸€æ•´è¡Œå†…å®¹,ç„¶åå†å–å‡ºæœ‰æ•ˆéƒ¨åˆ†
 {
 	int len=0,i=0;
 	char *buf = (char*)malloc(maxlen);
@@ -61,10 +61,10 @@ char *readline(char *mbuf, int maxlen, FILE *fp)
 		return NULL;
 
 
-	while((*(buf+len) == 0x20 || *(buf+len) == '\t') && len<maxlen-1)
+	while((*(buf+len) == 0x20 || *(buf+len) == '\t') && len<maxlen-1)	//-å»é™¤å‰é¢çš„ç©ºæ ¼å’Œåˆ¶è¡¨ç¬¦
 		len++;
 	
-    while(len<maxlen-1 && *(buf+len)!='\n' && *(buf+len)!='#' )
+    while(len<maxlen-1 && *(buf+len)!='\n' && *(buf+len)!='#' )	//-è¯»å‡ºæœ‰æ•ˆå‚æ•°
     	  {
   
 		 *(mbuf+i)=*(buf+len);
@@ -134,7 +134,7 @@ void* MediaStoreThread(void *arg)
             } 
              
             for(i=0;i<linesnum;i++){
-                 pthread_join(id[i], NULL); 
+                 pthread_join(id[i], NULL); //-ä½¿ä¸»çº¿ç¨‹é˜»å¡ç­‰å¾…å…¶ä»–çº¿ç¨‹é€€å‡º
             } 
             
     }
@@ -152,7 +152,7 @@ void *Aero_Store_Thread(void *arg)
 
     while(1)
     {  
-        sockfd=IPC_AddMediaSource(recordpara->cameraIP,recordpara->cameraPort,1,1,3);  //Á¬½ÓÉãÏñÍ·
+        sockfd=IPC_AddMediaSource(recordpara->cameraIP,recordpara->cameraPort,1,1,3);  //è¿æ¥æ‘„åƒå¤´
         if(sockfd<0)
         {
             syslog(LOG_ERR,"connect Aero IPC %s error!\n", recordpara->cameraIP);
@@ -163,10 +163,10 @@ void *Aero_Store_Thread(void *arg)
             syslog(LOG_ERR,"connect Aero IPC %s sucess!\n", recordpara->cameraIP);
         }
         
-        if(IPC_StartTransmit(sockfd)<0)     //ÉãÏñÍ·¿ªÊ¼´«Êä
+        if(IPC_StartTransmit(sockfd)<0)     //æ‘„åƒå¤´å¼€å§‹ä¼ è¾“
         {
             syslog(LOG_ERR,"Aero IPC %s StartTransmit error!\n", recordpara->cameraIP);
-            if(IPC_RemoveMediaSource(sockfd)<0)  //ÒÆ³ıÁ÷Ã½Ìå
+            if(IPC_RemoveMediaSource(sockfd)<0)  //ç§»é™¤æµåª’ä½“
             {
                 syslog(LOG_ERR,"disconnect Aero IPC %s error!\n", recordpara->cameraIP);
             }
@@ -186,7 +186,7 @@ void *Aero_Store_Thread(void *arg)
         {
             syslog(LOG_ERR,"Aero IPC %s start record in %s failed! errorCode:%lu\n",recordpara->cameraIP, recordpara->cameraID, nvrproc_getlasterror());
              
-            if(IPC_StopTransmit(sockfd)<0)//Í£Ö¹´«Êä
+            if(IPC_StopTransmit(sockfd)<0)//åœæ­¢ä¼ è¾“
             {
                 syslog(LOG_ERR,"Aero IPC %s StopTransmit error!\n", recordpara->cameraIP);
             }
@@ -194,7 +194,7 @@ void *Aero_Store_Thread(void *arg)
             {
                 //syslog(LOG_ERR,"Aero IPC %s StopTransmit success!\n", recordpara->cameraIP);
             }
-            if(IPC_RemoveMediaSource(sockfd)<0)  //ÒÆ³ıÁ÷Ã½Ìå
+            if(IPC_RemoveMediaSource(sockfd)<0)  //ç§»é™¤æµåª’ä½“
             {
                 syslog(LOG_ERR,"disconnect Aero IPC %s error!\n", recordpara->cameraIP);
             }
@@ -212,7 +212,7 @@ void *Aero_Store_Thread(void *arg)
         void* cbArgs = (void*) recordhandle;
         
         //starRecord
-        if(IPC_SetGetDataCB(sockfd, &Aero_Store_CallBack, cbArgs)<0) //ÉèÖÃÁ÷»Øµ÷º¯Êı
+        if(IPC_SetGetDataCB(sockfd, &Aero_Store_CallBack, cbArgs)<0) //è®¾ç½®æµå›è°ƒå‡½æ•°
         {
             syslog(LOG_ERR,"Aero IPC %s SetGetDataCB error!\n", recordpara->cameraIP);
             if(NAR_stopRecord(recordhandle)<0)
@@ -223,7 +223,7 @@ void *Aero_Store_Thread(void *arg)
             {
                 //syslog(LOG_ERR,"Aero IPC %s stop Record in %s success!\n", recordpara->cameraIP, recordpara->cameraID);
             }
-            if(IPC_StopTransmit(sockfd)<0)//Í£Ö¹´«Êä
+            if(IPC_StopTransmit(sockfd)<0)//åœæ­¢ä¼ è¾“
             {
                 syslog(LOG_ERR,"Aero IPC %s StopTransmit error!\n", recordpara->cameraIP);
             }
@@ -231,7 +231,7 @@ void *Aero_Store_Thread(void *arg)
             {
                 //syslog(LOG_ERR,"Aero IPC %s StopTransmit success!\n", recordpara->cameraIP);
             }
-            if(IPC_RemoveMediaSource(sockfd)<0)  //ÒÆ³ıÁ÷Ã½Ìå
+            if(IPC_RemoveMediaSource(sockfd)<0)  //ç§»é™¤æµåª’ä½“
             {
                 syslog(LOG_ERR,"disconnect Aero IPC %s error!\n", recordpara->cameraIP);
             }
@@ -246,7 +246,7 @@ void *Aero_Store_Thread(void *arg)
             //syslog(LOG_ERR,"Aero IPC %s SetGetDataCB success!\n",recordpara->cameraIP);
         }
          
-        if (IPC_SetGetDataCBRun(sockfd, 1)<0) //Æô¶¯Á÷»Øµ÷º¯ÊıÏß³Ì£¬¿ªÊ¼´æ´¢
+        if (IPC_SetGetDataCBRun(sockfd, 1)<0) //å¯åŠ¨æµå›è°ƒå‡½æ•°çº¿ç¨‹ï¼Œå¼€å§‹å­˜å‚¨
         {
             syslog(LOG_ERR,"Aero IPC %s GetDataCB Run error!\n",recordpara->cameraIP);
                 //stopRecord
@@ -259,7 +259,7 @@ void *Aero_Store_Thread(void *arg)
                 //syslog(LOG_ERR,"Aero IPC %s stop Record in %s success!\n", recordpara->cameraIP, recordpara->cameraID);
             } 
             
-            if(IPC_StopTransmit(sockfd)<0)//Í£Ö¹´«Êä
+            if(IPC_StopTransmit(sockfd)<0)//åœæ­¢ä¼ è¾“
             {
                 syslog(LOG_ERR,"Aero IPC %s StopTransmit error!\n", recordpara->cameraIP);
             }
@@ -268,7 +268,7 @@ void *Aero_Store_Thread(void *arg)
                 //syslog(LOG_ERR,"Aero IPC %s StopTransmit success!\n", recordpara->cameraIP);
             }
 
-            if(IPC_RemoveMediaSource(sockfd)<0)  //ÒÆ³ıÁ÷Ã½Ìå
+            if(IPC_RemoveMediaSource(sockfd)<0)  //ç§»é™¤æµåª’ä½“
             {
                 syslog(LOG_ERR,"disconnect Aero IPC %s error!\n", recordpara->cameraIP);
             }
@@ -328,7 +328,7 @@ void * HK_Store_Thread(void * para){
 
     while(1){
     	//-----------Init
-    	NET_DVR_Init();
+    	NET_DVR_Init();	//-è°ƒç”¨SDKçš„APIå‡½æ•°
         hkargs.block_flag = 0;
 
     	//------------Set Connecttime and ReconnectTime

@@ -23,7 +23,7 @@
 #define MAX_SOURCE_NUM 100
 #define MAX_CAMERAID_LEN 16
 #define STREAM_BUF_SIZE 1024 //缓冲区
-#define HASH(hd) (((unsigned int)hd%MAX_SOURCE_NUM))
+#define HASH(hd) (((unsigned int)hd%MAX_SOURCE_NUM))	//-没有什么特殊的就是取余数保证不越界
  
 typedef struct MediaSourceInfo{
 				int handle;
@@ -41,13 +41,13 @@ pthread_rwlock_t MInfo_PRW = PTHREAD_RWLOCK_INITIALIZER;
 
 
 /*分配流媒体信息存储单元*/
-int allocMediaSourceInfo(uint16_t handle)
+int allocMediaSourceInfo(uint16_t handle)	//-就是分配了一个空间,而不是一开始就定义一个大数组
 {
 	int i;
     pthread_rwlock_rdlock(&MInfo_PRW);
-	for(i = HASH(handle); i < MAX_SOURCE_NUM + HASH(handle); i++)
+	for(i = HASH(handle); i < MAX_SOURCE_NUM + HASH(handle); i++)	//-这样可以保证把所有的检索一遍,而不必从0开始
 	{
-		if(!mediaSourceInfos[HASH(i)])
+		if(!mediaSourceInfos[HASH(i)])	//-寻找到第一个空闲指针准备赋值
 			break;
 	}
 	if(i == MAX_SOURCE_NUM+HASH(handle))
@@ -65,7 +65,7 @@ int allocMediaSourceInfo(uint16_t handle)
 		return -1;
 	}
     pthread_rwlock_unlock(&MInfo_PRW);
-	return i;
+	return i;	//-返回数组偏移量
 }
 
 /*查找流媒体信息存储单元*/
@@ -77,7 +77,7 @@ int findMediaSourceInfo(uint16_t handle)
 	{
 		if(!mediaSourceInfos[HASH(i)])
 			continue;
-		if(mediaSourceInfos[HASH(i)]->handle == handle)
+		if(mediaSourceInfos[HASH(i)]->handle == handle)	//-根据套接字句柄区分信息存储单元
 		{
             pthread_rwlock_unlock(&MInfo_PRW);
             return HASH(i);
@@ -237,7 +237,7 @@ int IPC_RemoveMediaSource(uint16_t handle)
 }
 
 /*开始传输*/
-int IPC_StartTransmit(uint16_t handle)
+int IPC_StartTransmit(uint16_t handle)	//-开始传送就是给摄像头发送指令,摄像头侧是一个独立系统
 {
 	int sockfd,i;
 	uint16_t nDecoder;
