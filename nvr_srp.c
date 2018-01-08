@@ -1,3 +1,6 @@
+﻿/*
+根据协议实际字节操作了.
+*/
 #include "init.h" 
 #include "nvr_srp.h"
 #include "rd_wr.h"
