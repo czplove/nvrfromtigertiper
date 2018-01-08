@@ -124,42 +124,42 @@ vnode_to_buf(char *buf, vnode * v)
 }
 
 void
-buf_to_vnode(char *buf, vnode * v)
+buf_to_vnode(char *buf, vnode * v)	//-把buf中的内容提取到结构体中使用
 {
 	int i;
-	memcpy(v->cameraid, buf, CNameLength * sizeof(char));
+	memcpy(v->cameraid, buf, CNameLength * sizeof(char));	//-摄像头名字
 	buf = buf + CNameLength * sizeof(char);
-	memcpy(v->alias, buf, CNameLength * sizeof(char));
+	memcpy(v->alias, buf, CNameLength * sizeof(char));	//-摄像头别名
 	buf = buf + CNameLength * sizeof(char);
-	memcpy(v->volName, buf, VolNameLength * sizeof(char));
+	memcpy(v->volName, buf, VolNameLength * sizeof(char));	//-所在卷名称
 	buf = buf + VolNameLength * sizeof(char);
-	for (i = 0; i < MaxchunkCount; i++) {
+	for (i = 0; i < MaxchunkCount; i++) {			//-分配给该vnode指示录像卷的块，用块号记录
 		memcpy(&(v->block[i][0]), buf, sizeof(int));
 		buf += sizeof(int);
 		memcpy(&(v->block[i][1]), buf, sizeof(int));
 		buf += sizeof(int);
 	}
-	memcpy(&v->storeAddr, buf, sizeof(long long));
+	memcpy(&v->storeAddr, buf, sizeof(long long));		//-下一次写入地址
 	buf += sizeof(long long);
-	memcpy(&v->curSnode, buf, sizeof(long long));
+	memcpy(&v->curSnode, buf, sizeof(long long));		//-当前snode号
 	buf += sizeof(long long);
-	memcpy(&v->firstIndex, buf, sizeof(long long));
+	memcpy(&v->firstIndex, buf, sizeof(long long));		//-时间索引表首地址
 	buf += sizeof(long long);
-	memcpy(&v->queryAdd, buf, sizeof(long long));
+	memcpy(&v->queryAdd, buf, sizeof(long long));		//-下一次写时间索引地址
 	buf += sizeof(long long);
-	memcpy(&v->isRecycle, buf, sizeof(char));
+	memcpy(&v->isRecycle, buf, sizeof(char));		//-回转标志位
 	buf += sizeof(char);
-	memcpy(&v->savedDays, buf, sizeof(short));
+	memcpy(&v->savedDays, buf, sizeof(short));		//-录像保存天数
 	buf += sizeof(short);
-	memcpy(&v->delPolicy, buf, sizeof(char));
+	memcpy(&v->delPolicy, buf, sizeof(char));		//-录像覆盖策略
 	buf += sizeof(char);
-	memcpy(&v->encodeType, buf, sizeof(char));
+	memcpy(&v->encodeType, buf, sizeof(char));		//-编码格式 #define H264 1；
 	buf += sizeof(char);
-	memcpy(&v->SnodeRecycle, buf, sizeof(char));
+	memcpy(&v->SnodeRecycle, buf, sizeof(char));		//1 Recycled; 0 notRecycled 
 	buf += sizeof(char);
-	memcpy(&v->count, buf, sizeof(short));
+	memcpy(&v->count, buf, sizeof(short));			//一级索引的计数器
 	buf += sizeof(short);
-	memcpy(&v->wr_count, buf, sizeof(short));
+	memcpy(&v->wr_count, buf, sizeof(short));		//一级索引的写位置
 	buf += sizeof(short);
 	memcpy(&v->status, buf, sizeof(char));
 #ifdef SPACE_TIME_SYNCHRONIZATION    
@@ -170,7 +170,7 @@ buf_to_vnode(char *buf, vnode * v)
     buf += sizeof(short);
     memcpy(&v->origin_time, buf, sizeof(int)); 
 #endif    
-	v->_bf = NULL;
+	v->_bf = NULL;						//指向对应的缓冲区
 }
 
 void

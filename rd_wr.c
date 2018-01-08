@@ -31,7 +31,7 @@ unsigned int ErrorFlag;
 
 
 int
-get_vnode(_sbinfo sbinfo, vnode * v, int ID)
+get_vnode(_sbinfo sbinfo, vnode * v, int ID)	//-从文件中获取内容,并转化到结构体中使用
 {
 	int fd1;
 	char buf[Vnode_SIZE];
