@@ -1,11 +1,11 @@
-/*inline*/ int
+﻿/*inline*/ int
 bit(char *addr, int nr)
 {
 	return (addr[nr >> 3] & (1 << (nr & 7))) != 0;
 }
 
 /*inline*/ int
-setbit_(char *addr, int nr)
+setbit_(char *addr, int nr)	//-设置对应的位
 {
 	int __res = bit(addr, nr);
 	addr[nr >> 3] |= (1 << (nr & 7));
@@ -13,7 +13,7 @@ setbit_(char *addr, int nr)
 }
 
 /*inline*/ int
-clrbit_(char *addr, int nr)
+clrbit_(char *addr, int nr)	//-清除对应的位
 {
 	int __res = bit(addr, nr);
 	addr[nr >> 3] &= ~(1 << (nr & 7));

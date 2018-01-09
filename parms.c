@@ -25,7 +25,7 @@
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER) 
 SBTable sbTable;
 void
-sb_to_buf(char *buf, SBlock * sb)
+sb_to_buf(char *buf, SBlock * sb)	//-把结构体中的信息提取到缓冲区中
 {
 	memcpy(buf, sb->fileSystemName, FNameLength * sizeof(char));
 	buf = buf + FNameLength * sizeof(char);
@@ -50,7 +50,7 @@ sb_to_buf(char *buf, SBlock * sb)
 }
 
 void
-buf_to_sb(char *buf, SBlock * sb)
+buf_to_sb(char *buf, SBlock * sb)	//-把缓冲区中的内容提取到结构体中
 {
 	memcpy(sb->fileSystemName, buf, FNameLength * sizeof(char));
 	buf = buf + FNameLength * sizeof(char);
@@ -202,7 +202,7 @@ buf_to_DSI(char *buf, seginfo * seg)
 }
 
 int
-cal_blocks(vnode * v)
+cal_blocks(vnode * v)	//-这个计算原理还不清楚
 {
 	int i, j;
 	int sum = 0;
@@ -239,7 +239,7 @@ free_blocks(_sbinfo sbinfo, vnode * v, int time)
 {
 	sbinfo->_es->wTime = time;
 	sbinfo->_es->vnodeCount--;
-	sbinfo->_es->freeBlocksCount += cal_blocks(v);
+	sbinfo->_es->freeBlocksCount += cal_blocks(v);	//-空闲块数
 	set_clr_bitmap(sbinfo, v, 0);
 	return 0;
 }

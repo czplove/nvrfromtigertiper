@@ -207,7 +207,7 @@ typedef struct _vnode {
 
 typedef struct bufferHead {
     char map[MaxBufBitmapLen];
-    pthread_rwlock_t spin;
+    pthread_rwlock_t spin;	//-读写锁是用来解决读者写者问题的，读操作可以共享，写操作是排他的
 } *bfHead;
 
 typedef struct sbInfo {

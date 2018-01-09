@@ -58,7 +58,7 @@ get_bitmap(int fd, _sbinfo sbinfo);
 inline int
 get_bitmap(int fd, _sbinfo sbinfo)
 {				//读取逻辑卷的bitmap。
-	return _read(fd, sbinfo->bitmap, MaxBlocks, BitmapAddr);
+	return _read(fd, sbinfo->bitmap, MaxBlocks, BitmapAddr);	//?自己借用了卷的概念
 
 }
 
@@ -78,10 +78,10 @@ get_buf(_sbinfo sbinfo)
 	}
 	size = (sizeof(struct vnodeInfo)) * BuffNodeNum;
 	//初始化bfHead结构体。
-	memset(sbinfo->_bh->map, 0, MaxBufBitmapLen);
+	memset(sbinfo->_bh->map, 0, MaxBufBitmapLen);	//缓冲区的bitmap长度
 	//   spin_rwinit(sbinfo->_bh->spin);
 	pthread_rwlock_init(&sbinfo->_bh->spin, NULL);
-	if ((sbinfo->_bf = malloc(size)) == NULL) {
+	if ((sbinfo->_bf = malloc(size)) == NULL) {	//上面是头空间,这里是实际的数据空间
 		ErrorFlag = MALLOC_ERR;
 		spin_rwdestroy(sbinfo->_bh->spin);
 		free(sbinfo->_bh);
@@ -91,7 +91,7 @@ get_buf(_sbinfo sbinfo)
 }
 
 int
-vnodes_build(_sbinfo sbinfo)
+vnodes_build(_sbinfo sbinfo)	//-把文件中的数据转化为内存结构数据
 {				//根据硬盘结构信息，建立vnode内存结构
 	int i = 0;
 	int fd1;
@@ -109,14 +109,14 @@ vnodes_build(_sbinfo sbinfo)
 		close(fd1);
 		goto err;
 	}
-	if (_read(fd1, buf, Vnode_SIZE * MaxUsers, VnodeAddr) < 0) {
+	if (_read(fd1, buf, Vnode_SIZE * MaxUsers, VnodeAddr) < 0) {	//-从一个大文件中把需要的内容读取到内存中
 		ErrorFlag = READ_LVM_ERR;
 		goto err1;
 	}
-	if (get_buf(sbinfo) < 0) {
+	if (get_buf(sbinfo) < 0) {	//-在内存中申请一个缓冲区
 		goto err1;
 	}
-	while (i < MaxUsers) {
+	while (i < MaxUsers) {	//-把文件中读取出来的内容进行提取,并填写到内存中
 		if (bit(sbinfo->vnodemapping, i)) {	//有vnode
 			v = (vnode *) (sbinfo->vnodeTable + i * sizeof(vnode));
 			buf_to_vnode(buf + i * Vnode_SIZE, v);
@@ -145,7 +145,7 @@ get_vbitmap(int fd, _sbinfo sbinfo)
    建立逻辑卷的内存结构，围绕sbinfo结构进行。
 */
 int
-men_build(SBlock * sb, _sbinfo sbinfo, char *volname, int flag)
+men_build(SBlock * sb, _sbinfo sbinfo, char *volname, int flag)	//-所谓的存储创建就是在内存中形成可用结构体
 {				//flag==0,表示硬盘结构未建立。flag＝＝1或者其他,表示已经建立
 	int fd;
 	sbinfo->_es = sb;	//指向超级块
@@ -278,7 +278,7 @@ init(const char *volume_path)
 	SBlock *sb;
 	_sbinfo sbinfo;
 	int i, m = 0;
-	if (!InitFlag) {
+	if (!InitFlag) {	//-保证仅仅初始化一次
 		for (i = 0; i < LvmCount; i++)
 			sbTable.table[i] = NULL;	//初始化SBtable
 		spin_rwinit(sbTable.spin);
